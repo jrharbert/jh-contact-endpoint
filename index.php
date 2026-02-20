@@ -39,8 +39,10 @@ $allowedOrigins = ['https://joshuaharbert.com'];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
+$localhostEnabled = filter_var($_ENV['LOCALHOST_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN);
+
 $originAllowed = in_array($origin, $allowedOrigins, true)
-    || (!$turnstileEnabled && (bool) preg_match('/^https?:\/\/localhost(:\d+)?$/', $origin));
+    || ($localhostEnabled && (bool) preg_match('/^https?:\/\/localhost(:\d+)?$/', $origin));
 
 if ($originAllowed) {
     header('Access-Control-Allow-Origin: ' . $origin);
