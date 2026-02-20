@@ -20,7 +20,7 @@ php -S localhost:8000
 
 ## Deployment
 
-Push to `main` — GitHub Actions handles the rest. See `.github/workflows/deploy.yml`.
+Push to `master` — GitHub Actions handles the rest. See `.github/workflows/deploy.yml`.
 
 Server path: `/var/www/contact.joshuaharbert.com`
 

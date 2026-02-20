@@ -26,7 +26,7 @@ With `TURNSTILE_ENABLED=false`, Turnstile validation is skipped and localhost CO
 
 ## Deployment
 
-Push to `main` — GitHub Actions SSHes into the VPS, runs `git pull origin main` and `composer install --no-dev --optimize-autoloader`. Required repository secrets: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` (and optionally `SSH_PORT`).
+Push to `master` — GitHub Actions SSHes into the VPS, runs `git pull origin master` and `composer install --no-dev --optimize-autoloader`. Required repository secrets: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` (and optionally `SSH_PORT`).
 
 ## Architecture
 
