@@ -21,3 +21,4 @@ jobs:
             cd /var/www/contact.joshuaharbert.com
             git pull origin master
             composer install --no-dev --optimize-autoloader --no-interaction
+            sudo systemctl reload php8.3-fpm
