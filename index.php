@@ -98,6 +98,7 @@ if (count($timestamps) >= $rlMax) {
 $name             = trim((string) ($_POST['name']                  ?? ''));
 $email            = trim((string) ($_POST['email']                 ?? ''));
 $message          = trim((string) ($_POST['message']               ?? ''));
+$subject          = trim((string) ($_POST['subject']               ?? ''));
 $turnstileToken   =       (string) ($_POST['cf-turnstile-response'] ?? '');
 
 if ($name === '') {
@@ -120,9 +121,13 @@ if ($message === '') {
 if (strlen($message) > 5000) {
     jsonResponse(false, 'Message must be 5000 characters or fewer.', 422);
 }
+if (strlen($subject) > 200) {
+    jsonResponse(false, 'Subject must be 200 characters or fewer.', 422);
+}
 
-// Strip newlines from name so it cannot be injected into mail headers
-$name = str_replace(["\r", "\n"], ' ', $name);
+// Strip newlines from fields used in mail headers to prevent injection
+$name    = str_replace(["\r", "\n"], ' ', $name);
+$subject = str_replace(["\r", "\n"], ' ', $subject);
 
 // ---------------------------------------------------------------------------
 // Cloudflare Turnstile verification
@@ -173,19 +178,13 @@ try {
     $mail->Username   = $_ENV['MAIL_USERNAME'] ?? '';
     $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? '';
 
-    $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? '', 'Contact Form');
+    $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? '', $name);
     $mail->addAddress($_ENV['MAIL_USERNAME']  ?? '');
     $mail->addReplyTo($email, $name);
 
-    $mail->Subject = 'Contact form: ' . $name;
+    $mail->Subject = $subject !== '' ? $subject : 'Message from ' . $name;
     $mail->isHTML(false);
-    $mail->Body = implode("\n", [
-        'Name:    ' . $name,
-        'Email:   ' . $email,
-        '',
-        'Message:',
-        $message,
-    ]);
+    $mail->Body = $message . "\n\n---\n\nMessage from {$name} ({$email})\nSent via joshuaharbert.com";
 
     $mail->send();
 
